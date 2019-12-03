@@ -1,9 +1,120 @@
-<html xmlns:th="http://www.thymeleaf.org">
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <title>Panel</title>
+    <title>Dashboard</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    Panel Testing. <br>
-    Now: <span th:text="${time}" th:remove="tag" > time </span>
+
+    <th:block th:each="register : ${registers}">
+        <input type="hidden" th:name="${register._id}" th:value="${'register_'+register._id}">
+    </th:block>
+    <input type="hidden" name="currentRegister" th:value="${currentRegister._id}" id="currentRegister">
+    <input type="hidden" name="currentLimit" th:value="${currentRegister.limit}" id="currentLimit">
+    <input type="hidden" name="currentCount" th:value="${currentRegister.count}" id="currentCount">
+
+    <center>
+        <div class="alert alert-dark">
+            <strong>
+                Now: <span th:text="${time}" th:remove="tag" > time </span> |
+                Register: <span th:text="${currentRegister._id}" th:remove="tag" > id </span>
+                Limit: <span th:text="${currentRegister.limit}" th:remove="tag" > limit </span>
+                | Possibilities: <span th:text="${possible}" th:remove="tag" > possible </span>
+            </strong>
+        </div>
+        <div class="main">
+
+            <!-- LEFT PANEL-->
+            <div class="leftPanel">
+
+                <div class="registers">
+                    REGISTERS
+                    <span class="sectionHeader"></span>
+                    <th:block th:each="register : ${registers}">
+                        <input type="button" th:name="${register._id}" class="btn btn-primary registerButton" th:id="${register._id}"
+                               onclick="changeCurrent(this.id)" th:value="${register._id}">
+                    </th:block>
+
+                </div>
+                <br>
+
+                <div class="numbers">
+                    REGISTERS
+                    <span class="sectionHeader"></span>
+                    <th:block th:each="number, iter : ${numbers}">
+                        <span th:if="${selectedNumbers.contains(number)}">
+                            <input type="button" th:name="${number}" class="btn btn-success numberButton" th:id="${number}"
+                               onclick="toggleSelection(this.id)" th:value="${number}">
+                        </span>
+                        <span th:unless="${selectedNumbers.contains(number)}">
+                            <input type="button" th:name="${number}" class="btn btn-warning numberButton" th:id="${number}"
+                                   onclick="toggleSelection(this.id)" th:value="${number}">
+                        </span>
+                        <span th:if="${iter.count % 10 == 0}"> <br> <br> </span>
+                    </th:block>
+                    <br><br>
+                </div>
+
+                <div class="selected">
+                    SELECTED
+                    <span class="sectionHeader"></span>
+                    <th:block th:each="number, iter : ${selectedNumbers}">
+                        <input type="button" th:name="${number}" class="btn btn-warning numberButton" th:id="${number}"
+                               onclick="removeFromSelection(this.id)" th:value="${number}">
+                        <span th:if="${iter.count % 10 == 0}"> <br> <br> </span>
+                    </th:block>
+                    <br>
+                </div>
+
+                <div class="sync">
+                    UPDATE DATA SOURCE
+                    <span class="sectionHeader"></span>
+                    <button type="button" class="btn btn-success" onclick="update()">UPDATE</button>
+                </div>
+
+            </div>
+
+            <!-- RIGHT PANEL-->
+            <div class="rightPanel">
+
+                <div class="drawSelect">
+                    DRAWS BY SELECTED
+                    <span class="sectionHeader"></span>
+                </div>
+
+                <div class="highAmount">
+                    HIGH AMOUNT
+                    <span class="sectionHeader"></span>
+                </div>
+
+                <div class="highDividend">
+                    HIGH DIVIDEND
+                    <span class="sectionHeader"></span>
+                </div>
+
+                <div class="probability">
+                    PROBABILITY
+                    <span class="sectionHeader"></span>
+                </div>
+
+            </div>
+        </div>
+    </center>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="panel.js"></script>
+<!--    document.getElementById('currentRegister'-->
 </body>
 </html>

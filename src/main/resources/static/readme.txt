@@ -1,9 +1,7 @@
 -Todo
-rest crud
-web crud
 bootstrap css
 kafka int
-mongo int
+mongo int +-50%
 panel
 
 -commands used in development

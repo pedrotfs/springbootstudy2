@@ -34,4 +34,13 @@ public class Register {
     public void setLimit(Integer limit) {
         this.limit = limit;
     }
+
+    @Override
+    public String toString() {
+        return "Register{" +
+                "_id='" + _id + '\'' +
+                ", count=" + count +
+                ", limit=" + limit +
+                '}';
+    }
 }

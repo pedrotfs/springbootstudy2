@@ -73,7 +73,7 @@ public class MaestroRestController {
 
     @GetMapping("/draw/getDrawsByRegisterIdAndNumber/")
     public List<Draw> getDrawsByRegisterIdAndNumber(@RequestParam final String registerId, @RequestParam final String numbers) {
-        LOG.info("recovering all draws of " + registerId + "containing " + numbers);
+        LOG.info("recovering all draws of " + registerId + " containing " + numbers);
         return drawService.findByRegisterIdAndNumberIn(registerId, numbers.split("-"));
     }
 
