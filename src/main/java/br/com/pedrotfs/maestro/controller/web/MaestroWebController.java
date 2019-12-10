@@ -1,9 +1,14 @@
 package br.com.pedrotfs.maestro.controller.web;
 
+import br.com.pedrotfs.maestro.domain.Draw;
 import br.com.pedrotfs.maestro.domain.Register;
 import br.com.pedrotfs.maestro.exception.EntityIdNotFoundException;
+import br.com.pedrotfs.maestro.kafka.services.RegisterConsumerService;
+import br.com.pedrotfs.maestro.kafka.services.RequestProducerService;
+import br.com.pedrotfs.maestro.service.DrawCalculationsService;
 import br.com.pedrotfs.maestro.service.RegisterService;
 import br.com.pedrotfs.maestro.util.NumberGenerator;
+import br.com.pedrotfs.maestro.util.ProbabilityDTO;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -29,11 +34,28 @@ public class MaestroWebController {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    @Autowired
+    private RequestProducerService requestProducerService;
+
+    @Autowired
+    private RegisterConsumerService registerConsumerService;
+
+    @Autowired
+    private DrawCalculationsService drawCalculationsService;
+
     private List<Register> registerList = new ArrayList<>();
 
     private Register currentRegister = null;
 
     private List<Integer> selectedNumbers = new ArrayList<>();
+
+    private List<ProbabilityDTO> probabilityDTO = new ArrayList<>();
+
+    private Draw higherDividend = null;
+
+    private Draw higherAmount = null;
+
+    private int count = 0;
 
     @GetMapping("/")
     public String getPanelPage(Model model) throws EntityIdNotFoundException {
@@ -48,10 +70,26 @@ public class MaestroWebController {
                 populateEssentialData();
             }
         }
+        if(probabilityDTO.isEmpty()) {
+            probabilityDTO = drawCalculationsService.getListWithProbabilities(currentRegister);
+        }
+        if(higherAmount == null) {
+            higherAmount = drawCalculationsService.getHigherAmount(currentRegister.get_id());
+        }
+        if(higherDividend == null) {
+            higherDividend = drawCalculationsService.getHigherDividends(currentRegister.get_id());
+        }
+        if(count == 0) {
+            count = drawCalculationsService.countDrawsByRegister(currentRegister.get_id());
+        }
         model.addAttribute("currentRegister", currentRegister);
         model.addAttribute("numbers", numberGenerator.generateNumbers(currentRegister));
         model.addAttribute("selectedNumbers", selectedNumbers);
+        model.addAttribute("probabilityDTO", probabilityDTO);
         model.addAttribute("possible", numberGenerator.getPossibilities(currentRegister));
+        model.addAttribute("higherDividend", higherDividend);
+        model.addAttribute("higherAmount", higherAmount);
+        model.addAttribute("count", count);
         return "panel";
     }
 
@@ -73,6 +111,10 @@ public class MaestroWebController {
             if(register.get_id().equalsIgnoreCase(registerId)) {
                 currentRegister = registerService.getSingleRegister(registerId);
                 selectedNumbers = new ArrayList<>();
+                probabilityDTO = new ArrayList<>();
+                higherDividend = null;
+                higherAmount = null;
+                count = 0;
             }
         }
         return "panel";
@@ -83,7 +125,7 @@ public class MaestroWebController {
         if(selectedNumbers.contains(Integer.parseInt(buttonId))) {
             selectedNumbers = numberGenerator.treatSelectedNumberRemoval(buttonId, selectedNumbers);
         } else {
-            if(currentRegister.getLimit() >= selectedNumbers.size()) {
+            if(currentRegister.getLimit() > selectedNumbers.size()) {
                 selectedNumbers.add(Integer.parseInt(buttonId));
                 Collections.sort(selectedNumbers);
             }
@@ -101,6 +143,9 @@ public class MaestroWebController {
 
     @GetMapping("/update/")
     public String update(@RequestParam final String buttonId)  {
+        requestProducerService.produceRequest(buttonId);
+        registerConsumerService.consumeRegisters();
+        requestProducerService.produceRequest("");
         return "panel";
     }
 
