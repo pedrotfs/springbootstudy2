@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -51,7 +50,10 @@ public class NumberGenerator {
     }
 
     public List<ProbabilityDTO> getCommonAdvice(final List<ProbabilityDTO> dtos, final Register register, final boolean lesser) {
-        List<ProbabilityDTO> list;
+        List<ProbabilityDTO> list = new ArrayList<>();
+        if(dtos.isEmpty()) {
+            return list;
+        }
         if(lesser) {
             list = new ArrayList<>(dtos.subList(register.getCount() - register.getLimit(), register.getCount()));
         } else {

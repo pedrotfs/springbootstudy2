@@ -50,9 +50,9 @@ public class RegisterConsumerServiceImpl implements RegisterConsumerService {
 
     private void buildDraws(final String json) {
         Document parsedDocument = Document.parse(json);
-        if(shouldPersist(parsedDocument.getInteger("_id"))) {
+        if(shouldPersist(parsedDocument.getInteger("_id"), parsedDocument.getString("name") )) {
             Draw draw = new Draw();
-            draw.set_id(parsedDocument.getInteger("_id").toString());
+            draw.set_id(parsedDocument.getString("name").toLowerCase() + parsedDocument.getInteger("_id").toString());
             Document dateDocument = (Document) parsedDocument.get("date");
             String date = dateDocument.getInteger("day") + "/" + dateDocument.getInteger("month") + "/" + dateDocument.getInteger("year");
             draw.setDate(date);
@@ -64,8 +64,8 @@ public class RegisterConsumerServiceImpl implements RegisterConsumerService {
         }
     }
 
-    private boolean shouldPersist(final Integer id)
+    private boolean shouldPersist(final Integer id, final String register)
     {
-        return mongoTemplate.getDb().getCollection("draw").find(new Document("_id", id.toString())).first() == null;
+        return mongoTemplate.getDb().getCollection("draw").find(new Document("_id", register + id.toString())).first() == null;
     }
 }

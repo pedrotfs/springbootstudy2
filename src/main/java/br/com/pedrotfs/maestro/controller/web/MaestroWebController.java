@@ -121,14 +121,7 @@ public class MaestroWebController {
     public String setCurrentRegister(@RequestParam final String registerId) throws EntityIdNotFoundException {
         for (Register register : registerList) {
             if(register.get_id().equalsIgnoreCase(registerId)) {
-                currentRegister = registerService.getSingleRegister(registerId);
-                selectedNumbers = new ArrayList<>();
-                probabilityDTO = new ArrayList<>();
-                adviceCommon = new ArrayList<>();
-                adviceLesser = new ArrayList<>();
-                higherDividend = null;
-                higherAmount = null;
-                count = 0;
+                resetScreen(registerId);
             }
         }
         return "panel";
@@ -156,11 +149,24 @@ public class MaestroWebController {
     }
 
     @GetMapping("/update/")
-    public String update(@RequestParam final String buttonId)  {
+    public String update(@RequestParam final String buttonId) throws EntityIdNotFoundException, InterruptedException {
         requestProducerService.produceRequest(buttonId);
         registerConsumerService.consumeRegisters();
+        Thread.sleep(1000);
         requestProducerService.produceRequest("");
+        resetScreen(buttonId);
         return "panel";
+    }
+
+    private void resetScreen(@RequestParam String buttonId) throws EntityIdNotFoundException {
+        currentRegister = registerService.getSingleRegister(buttonId);
+        selectedNumbers = new ArrayList<>();
+        probabilityDTO = new ArrayList<>();
+        adviceCommon = new ArrayList<>();
+        adviceLesser = new ArrayList<>();
+        higherDividend = null;
+        higherAmount = null;
+        count = 0;
     }
 
     private void populateEssentialData() throws EntityIdNotFoundException {
