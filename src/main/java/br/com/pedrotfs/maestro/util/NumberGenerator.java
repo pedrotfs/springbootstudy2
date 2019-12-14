@@ -58,9 +58,6 @@ public class NumberGenerator {
             list = new ArrayList<>(dtos.subList(0, register.getLimit()));
         }
         list.sort(new ProbabilityNumberComparator());
-        if(lesser) {
-            Collections.reverse(list);
-        }
         return list;
     }
 }

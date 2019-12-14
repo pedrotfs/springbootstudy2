@@ -79,7 +79,6 @@ public class MaestroWebController {
         }
         if(adviceCommon.isEmpty()) {
             adviceCommon = numberGenerator.getCommonAdvice(probabilityDTO, currentRegister, false);
-            Collections.reverse(adviceCommon);
         }
         if(adviceLesser.isEmpty()) {
             adviceLesser = numberGenerator.getCommonAdvice(probabilityDTO, currentRegister, true);

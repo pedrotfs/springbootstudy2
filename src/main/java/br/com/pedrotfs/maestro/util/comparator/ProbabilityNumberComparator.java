@@ -11,7 +11,7 @@ public class ProbabilityNumberComparator implements Comparator<ProbabilityDTO> {
         if(a.getNumber().equals(b.getNumber())) {
             return 0;
         }
-        else if(a.getNumber() > b.getNumber()) {
+        else if(a.getNumber() < b.getNumber()) {
             return -1;
         } else {
             return 1;
