@@ -51,6 +51,10 @@ public class MaestroWebController {
 
     private List<ProbabilityDTO> probabilityDTO = new ArrayList<>();
 
+    private List<ProbabilityDTO> adviceCommon = new ArrayList<>();
+
+    private List<ProbabilityDTO> adviceLesser = new ArrayList<>();
+
     private Draw higherDividend = null;
 
     private Draw higherAmount = null;
@@ -73,6 +77,13 @@ public class MaestroWebController {
         if(probabilityDTO.isEmpty()) {
             probabilityDTO = drawCalculationsService.getListWithProbabilities(currentRegister);
         }
+        if(adviceCommon.isEmpty()) {
+            adviceCommon = numberGenerator.getCommonAdvice(probabilityDTO, currentRegister, false);
+            Collections.reverse(adviceCommon);
+        }
+        if(adviceLesser.isEmpty()) {
+            adviceLesser = numberGenerator.getCommonAdvice(probabilityDTO, currentRegister, true);
+        }
         if(higherAmount == null) {
             higherAmount = drawCalculationsService.getHigherAmount(currentRegister.get_id());
         }
@@ -90,6 +101,8 @@ public class MaestroWebController {
         model.addAttribute("higherDividend", higherDividend);
         model.addAttribute("higherAmount", higherAmount);
         model.addAttribute("count", count);
+        model.addAttribute("adviceCommon", adviceCommon);
+        model.addAttribute("adviceLesser", adviceLesser);
         return "panel";
     }
 
@@ -112,6 +125,8 @@ public class MaestroWebController {
                 currentRegister = registerService.getSingleRegister(registerId);
                 selectedNumbers = new ArrayList<>();
                 probabilityDTO = new ArrayList<>();
+                adviceCommon = new ArrayList<>();
+                adviceLesser = new ArrayList<>();
                 higherDividend = null;
                 higherAmount = null;
                 count = 0;

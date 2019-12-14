@@ -1,8 +1,8 @@
 -Todo
-bootstrap css
-kafka int
-mongo int +-50%
-panel
+panel - sort most requested by number (advice panel)
+rest - advice
+rest - probability
+dynamic query
 
 -commands used in development
 kafka-console-producer.sh --broker-list localhost:9092 --topic produced-requests

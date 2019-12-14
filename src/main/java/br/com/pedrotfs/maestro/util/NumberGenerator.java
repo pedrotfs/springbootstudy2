@@ -1,10 +1,12 @@
 package br.com.pedrotfs.maestro.util;
 
 import br.com.pedrotfs.maestro.domain.Register;
+import br.com.pedrotfs.maestro.util.comparator.ProbabilityNumberComparator;
 import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -31,7 +33,7 @@ public class NumberGenerator {
 
     public BigInteger getPossibilities(final Register register)
     {
-        BigInteger result = BigInteger.valueOf(register.getCount());
+        BigInteger result;
         BigInteger nFat = BigInteger.valueOf(1);
         BigInteger pFat = BigInteger.valueOf(1);
         BigInteger npFat = BigInteger.valueOf(1);
@@ -46,5 +48,19 @@ public class NumberGenerator {
         }
         result = (nFat).divide(pFat.multiply(npFat));
         return result;
+    }
+
+    public List<ProbabilityDTO> getCommonAdvice(final List<ProbabilityDTO> dtos, final Register register, final boolean lesser) {
+        List<ProbabilityDTO> list;
+        if(lesser) {
+            list = new ArrayList<>(dtos.subList(register.getCount() - register.getLimit(), register.getCount()));
+        } else {
+            list = new ArrayList<>(dtos.subList(0, register.getLimit()));
+        }
+        list.sort(new ProbabilityNumberComparator());
+        if(lesser) {
+            Collections.reverse(list);
+        }
+        return list;
     }
 }

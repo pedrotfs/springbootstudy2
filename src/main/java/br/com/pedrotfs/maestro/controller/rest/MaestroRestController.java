@@ -3,8 +3,11 @@ package br.com.pedrotfs.maestro.controller.rest;
 import br.com.pedrotfs.maestro.domain.Draw;
 import br.com.pedrotfs.maestro.domain.Register;
 import br.com.pedrotfs.maestro.exception.EntityIdNotFoundException;
+import br.com.pedrotfs.maestro.service.DrawCalculationsService;
 import br.com.pedrotfs.maestro.service.DrawService;
 import br.com.pedrotfs.maestro.service.RegisterService;
+import br.com.pedrotfs.maestro.util.NumberGenerator;
+import br.com.pedrotfs.maestro.util.ProbabilityDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,12 @@ public class MaestroRestController {
 
     @Autowired
     private DrawService drawService;
+
+    @Autowired
+    private DrawCalculationsService drawCalculationsService;
+
+    @Autowired
+    private NumberGenerator numberGenerator;
 
     @GetMapping("/")
     public String getRootEndpoint() {
@@ -121,5 +130,13 @@ public class MaestroRestController {
     public String deleteDraw(@RequestParam final String id) throws EntityIdNotFoundException {
         LOG.info("deleting draw with id " + id);
         return "deleted registry with id " + drawService.deleteDraws(id);
+    }
+
+    @GetMapping("/advice")
+    public List<ProbabilityDTO> getCommonAdvice(@RequestParam String registerId, @RequestParam boolean lesser) throws EntityIdNotFoundException {
+        LOG.info("advice");
+        final Register singleRegister = registerService.getSingleRegister(registerId);
+        final List<ProbabilityDTO> list = drawCalculationsService.getListWithProbabilities(singleRegister);
+        return numberGenerator.getCommonAdvice(list, singleRegister, lesser);
     }
 }

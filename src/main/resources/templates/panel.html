@@ -72,13 +72,34 @@
                                onclick="removeFromSelection(this.id)" th:value="${number}">
                         <span th:if="${iter.count % 10 == 0}"> <br> <br> </span>
                     </th:block>
-                    <br>
+                    <br><br>
                 </div>
 
                 <div class="sync">
                     UPDATE DATA SOURCE
                     <span class="sectionHeader"></span>
                     <button type="button" class="btn btn-success" onclick="update(this.id)" th:id="${currentRegister._id}" th:name="${currentRegister._id}">UPDATE</button>
+                    <br><br>
+                </div>
+
+                <div class="probability">
+                    MOST USED SORTED
+                    <span class="sectionHeader"></span>
+                    <br>
+                    <th:block th:each="dto, iter : ${adviceCommon}">
+                        <input type="button" th:name="${dto.number}" class="btn btn-info" th:id="${dto.number}" th:value="${dto.number}">
+                        <span th:if="${iter.count % 10 == 0}"> <br> <br> </span>
+                    </th:block>
+                    <br><br>
+                </div>
+                <div class="probability">
+                    LEAST USED SORTED
+                    <span class="sectionHeader"></span>
+                    <br>
+                    <th:block th:each="dto, iter : ${adviceLesser}">
+                        <input type="button" th:name="${dto.number}" class="btn btn-info" th:id="${dto.number}" th:value="${dto.number}">
+                        <span th:if="${iter.count % 10 == 0}"> <br> <br> </span>
+                    </th:block>
                 </div>
 
             </div>
@@ -144,7 +165,7 @@
                     <span class="sectionHeader"></span>
                     <br>
                     <th:block th:each="dto, iter : ${probabilityDTO}">
-                        <input type="button" th:name="${dto.number}" class="btn btn-success" th:id="${dto.number}" th:value="${dto.number}">
+                        <input type="button" th:name="${dto.number}" class="btn btn-info" th:id="${dto.number}" th:value="${dto.number}">
                         <span th:if="${dto.chance  &gt 0.66}">
                             <input type="button" th:name="${dto.chance}" class="btn btn-success" th:id="${dto.chance}" th:value="${dto.chance}">
                         </span>
