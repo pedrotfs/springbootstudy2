@@ -108,6 +108,8 @@ public class MaestroWebController {
         if(!selectedNumbers.isEmpty()) {
             selectedDraws = drawService.findByRegisterIdAndNumberIn(currentRegister.get_id(), selectedNumbers);
             selectedDraws.sort(new DrawIdComparator());
+        } else {
+            selectedDraws = new ArrayList<>();
         }
         model.addAttribute("currentRegister", currentRegister);
         model.addAttribute("numbers", numberGenerator.generateNumbers(currentRegister));
@@ -120,6 +122,7 @@ public class MaestroWebController {
         model.addAttribute("adviceCommon", adviceCommon);
         model.addAttribute("adviceLesser", adviceLesser);
         model.addAttribute("selectedDraws", selectedDraws);
+        model.addAttribute("selectedDrawsSize", selectedDraws.size());
         return "panel";
     }
 

@@ -103,6 +103,15 @@
                         <span th:if="${iter.count % 10 == 0}"> <br> <br> </span>
                     </th:block>
                 </div>
+                <div class="predictive">
+                    NUMBER PREDICTIVE ANALYSIS
+                    <span class="sectionHeader"></span>
+                    <br>
+                    <th:block th:each="dto, iter : ${adviceLesser}">
+                        <input type="button" th:name="${dto.number}" class="btn btn-info" th:id="${dto.number}" th:value="${dto.number}">
+                        <span th:if="${iter.count % 10 == 0}"> <br> <br> </span>
+                    </th:block>
+                </div>
 
             </div>
 
@@ -112,9 +121,10 @@
                 <div class="drawSelect">
                     DRAWS BY SELECTED
                     <span class="sectionHeader"></span>
+                    total: <span th:text="${selectedDrawsSize}" th:remove="tag" > size </span> <br>
                     <th:block th:each="draw, iter : ${selectedDraws}">
                         <span th:text="${draw._id}" th:remove="tag" > id </span> -
-                        <span th:text="${draw.date}" th:remove="tag" > date </span> -
+                        <b><span th:text="${draw.date}" th:remove="tag" > date </span> -</b>
                         <th:block th:each="number, iter2 : ${draw.numbers}">
                             <span th:text="${number}" th:remove="tag" > number </span>.
                         </th:block>
