@@ -7,8 +7,10 @@ import br.com.pedrotfs.maestro.kafka.services.RegisterConsumerService;
 import br.com.pedrotfs.maestro.kafka.services.RequestProducerService;
 import br.com.pedrotfs.maestro.service.DrawCalculationsService;
 import br.com.pedrotfs.maestro.service.RegisterService;
+import br.com.pedrotfs.maestro.service.impl.DrawServiceImpl;
 import br.com.pedrotfs.maestro.util.NumberGenerator;
 import br.com.pedrotfs.maestro.util.ProbabilityDTO;
+import br.com.pedrotfs.maestro.util.comparator.DrawIdComparator;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -43,6 +45,9 @@ public class MaestroWebController {
     @Autowired
     private DrawCalculationsService drawCalculationsService;
 
+    @Autowired
+    private DrawServiceImpl drawService;
+
     private List<Register> registerList = new ArrayList<>();
 
     private Register currentRegister = null;
@@ -59,6 +64,8 @@ public class MaestroWebController {
 
     private Draw higherAmount = null;
 
+    private List<Draw> selectedDraws = new ArrayList<>();
+
     private int count = 0;
 
     @GetMapping("/")
@@ -69,9 +76,15 @@ public class MaestroWebController {
         }
         model.addAttribute("registers", registerList);
         if(currentRegister == null) {
-            currentRegister = registerService.getSingleRegister("ltf");
-            if(currentRegister == null) {
-                populateEssentialData();
+            try {
+                currentRegister = registerService.getSingleRegister("ltf");
+            } catch(EntityIdNotFoundException e) {
+                if(currentRegister == null) {
+                    populateEssentialData();
+                }
+                else {
+                    throw e;
+                }
             }
         }
         if(probabilityDTO.isEmpty()) {
@@ -92,6 +105,10 @@ public class MaestroWebController {
         if(count == 0) {
             count = drawCalculationsService.countDrawsByRegister(currentRegister.get_id());
         }
+        if(!selectedNumbers.isEmpty()) {
+            selectedDraws = drawService.findByRegisterIdAndNumberIn(currentRegister.get_id(), selectedNumbers);
+            selectedDraws.sort(new DrawIdComparator());
+        }
         model.addAttribute("currentRegister", currentRegister);
         model.addAttribute("numbers", numberGenerator.generateNumbers(currentRegister));
         model.addAttribute("selectedNumbers", selectedNumbers);
@@ -102,6 +119,7 @@ public class MaestroWebController {
         model.addAttribute("count", count);
         model.addAttribute("adviceCommon", adviceCommon);
         model.addAttribute("adviceLesser", adviceLesser);
+        model.addAttribute("selectedDraws", selectedDraws);
         return "panel";
     }
 
@@ -140,6 +158,13 @@ public class MaestroWebController {
         return "panel";
     }
 
+    @GetMapping("/clear-selection/")
+    public String clearSelection(@RequestParam final String buttonId) {
+        selectedNumbers = new ArrayList<>();
+        selectedDraws = new ArrayList<>();
+        return "panel";
+    }
+
     @GetMapping("/remove-from-selection/")
     public String removeFromSelection(@RequestParam final String buttonId)  {
         if(selectedNumbers.contains(Integer.parseInt(buttonId))) {
@@ -164,6 +189,7 @@ public class MaestroWebController {
         probabilityDTO = new ArrayList<>();
         adviceCommon = new ArrayList<>();
         adviceLesser = new ArrayList<>();
+        selectedDraws = new ArrayList<>();
         higherDividend = null;
         higherAmount = null;
         count = 0;
@@ -171,7 +197,7 @@ public class MaestroWebController {
 
     private void populateEssentialData() throws EntityIdNotFoundException {
         Document document = new Document("_id", "ltf").append("limit", 15).append("count", 25);
-        mongoTemplate.insert(document);
+        mongoTemplate.insert(document, "register");
         currentRegister = registerService.getSingleRegister("ltf");
     }
 }

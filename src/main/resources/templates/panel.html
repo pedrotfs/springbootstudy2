@@ -72,6 +72,8 @@
                                onclick="removeFromSelection(this.id)" th:value="${number}">
                         <span th:if="${iter.count % 10 == 0}"> <br> <br> </span>
                     </th:block>
+                    <input type="button" name="${clear}" class="btn btn-danger numberButton" id="${clear}"
+                           onclick="clearSelection(this.id)" value="Clear">
                     <br><br>
                 </div>
 
@@ -110,6 +112,14 @@
                 <div class="drawSelect">
                     DRAWS BY SELECTED
                     <span class="sectionHeader"></span>
+                    <th:block th:each="draw, iter : ${selectedDraws}">
+                        <span th:text="${draw._id}" th:remove="tag" > id </span> -
+                        <span th:text="${draw.date}" th:remove="tag" > date </span> -
+                        <th:block th:each="number, iter2 : ${draw.numbers}">
+                            <span th:text="${number}" th:remove="tag" > number </span>.
+                        </th:block>
+                        <br>
+                    </th:block>
                 </div>
 
                 <div class="highAmount">

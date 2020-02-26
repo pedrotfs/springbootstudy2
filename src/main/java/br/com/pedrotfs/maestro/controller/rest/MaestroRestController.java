@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -81,9 +82,17 @@ public class MaestroRestController {
     }
 
     @GetMapping("/draw/getDrawsByRegisterIdAndNumber/")
-    public List<Draw> getDrawsByRegisterIdAndNumber(@RequestParam final String registerId, @RequestParam final String numbers) {
+    public List<Draw> getDrawsByRegisterIdAndNumber(@RequestParam final String registerId, @RequestParam final String numbers) throws NumberFormatException {
         LOG.info("recovering all draws of " + registerId + " containing " + numbers);
-        return drawService.findByRegisterIdAndNumberIn(registerId, numbers.split("-"));
+        String[] split = numbers.split("-");
+        List<Integer> integers = new ArrayList<>();
+        if(split.length == 0) {
+            return new ArrayList<>();
+        }
+        for(String piece : split) {
+            integers.add(Integer.parseInt(piece));
+        }
+        return drawService.findByRegisterIdAndNumberIn(registerId, integers);
     }
 
     @GetMapping("/draw/{id}")

@@ -5,7 +5,8 @@ function changeCurrent(registerId){
 			data: { registerId: registerId},
             contentType: 'application/json; charset=utf-8',
             success: window.location.href = '/'
-		})
+		});
+		location.reload(true);
 }
 
 function toggleSelection(buttonId){
@@ -16,6 +17,18 @@ function toggleSelection(buttonId){
             contentType: 'application/json; charset=utf-8',
             success: window.location.href = '/'
         })
+        location.reload(true);
+}
+
+function clearSelection(buttonId){
+		$.ajax({
+            url: '/clear-selection/',
+            type: 'GET',
+            data: { buttonId: buttonId},
+            contentType: 'application/json; charset=utf-8',
+            success: window.location.href = '/'
+        })
+        location.reload(true);
 }
 
 function removeFromSelection(buttonId){
@@ -26,6 +39,7 @@ function removeFromSelection(buttonId){
             contentType: 'application/json; charset=utf-8',
             success: window.location.href = '/'
         })
+        location.reload(true);
 }
 
 function update(buttonId){
@@ -36,4 +50,5 @@ function update(buttonId){
             contentType: 'application/json; charset=utf-8',
             success: window.location.href = '/'
         })
+        location.reload(true);
 }

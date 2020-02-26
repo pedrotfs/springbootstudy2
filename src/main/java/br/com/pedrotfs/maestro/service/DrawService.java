@@ -19,7 +19,7 @@ public interface DrawService {
 
     String deleteDraws(final String _id) throws EntityIdNotFoundException;
 
-    List<Draw> findByRegisterIdAndNumberIn(final String registerId, final String[] numbers);
+    List<Draw> findByRegisterIdAndNumberIn(final String registerId, final List<Integer> numbers);
 
     void populateDraw(String _id, String registerId, String date, String[] numbers, String[] dividends, String[] amount, Draw draw);
 }

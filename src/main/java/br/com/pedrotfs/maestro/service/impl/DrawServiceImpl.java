@@ -94,14 +94,10 @@ public class DrawServiceImpl implements DrawService {
     }
 
     @Override
-    public List<Draw> findByRegisterIdAndNumberIn(String registerId, String[] numbers) {
+    public List<Draw> findByRegisterIdAndNumberIn(String registerId, List<Integer> numbers) {
         Query query = new Query();
-        List<Integer> intNumbers = new ArrayList<>();
         Criteria registerId1 = Criteria.where("registerId").in(registerId);
-        for (final String number : numbers) {
-            intNumbers.add(Integer.parseInt(number));
-        }
-        query.addCriteria(registerId1.and("numbers").all(intNumbers));
+        query.addCriteria(registerId1.and("numbers").all(numbers));
         return mongoTemplate.find(query, Draw.class);
     }
 }
