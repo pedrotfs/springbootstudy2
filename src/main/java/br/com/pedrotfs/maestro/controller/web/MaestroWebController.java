@@ -201,6 +201,8 @@ public class MaestroWebController {
     private void populateEssentialData() throws EntityIdNotFoundException {
         Document document = new Document("_id", "ltf").append("limit", 15).append("count", 25);
         mongoTemplate.insert(document, "register");
+        document = new Document("_id", "mgs").append("limit", 6).append("count", 60);
+        mongoTemplate.insert(document, "register");
         currentRegister = registerService.getSingleRegister("ltf");
     }
 }

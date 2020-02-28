@@ -17,13 +17,15 @@
     <th:block th:each="register : ${registers}">
         <input type="hidden" th:name="${register._id}" th:value="${'register_'+register._id}">
     </th:block>
-    <input type="hidden" name="currentRegister" th:value="${currentRegister._id}" id="currentRegister">
-    <input type="hidden" name="currentLimit" th:value="${currentRegister.limit}" id="currentLimit">
-    <input type="hidden" name="currentCount" th:value="${currentRegister.count}" id="currentCount">
+    <span th:if="${currentRegister != null}">
+        <input type="hidden" name="currentRegister" th:value="${currentRegister._id}" id="currentRegister">
+        <input type="hidden" name="currentLimit" th:value="${currentRegister.limit}" id="currentLimit">
+        <input type="hidden" name="currentCount" th:value="${currentRegister.count}" id="currentCount">
+    </span>
 
     <center>
         <div class="alert alert-dark">
-            <strong>
+            <strong th:if="${currentRegister != null}">
                 Now: <span th:text="${time}" th:remove="tag" > time </span> |
                 Register: <span th:text="${currentRegister._id}" th:remove="tag" > id </span>
                 Limit: <span th:text="${currentRegister.limit}" th:remove="tag" > limit </span>
@@ -80,7 +82,9 @@
                 <div class="sync">
                     UPDATE DATA SOURCE
                     <span class="sectionHeader"></span>
-                    <button type="button" class="btn btn-success" onclick="update(this.id)" th:id="${currentRegister._id}" th:name="${currentRegister._id}">UPDATE</button>
+                    <span th:if="${currentRegister != null}">
+                        <button type="button" class="btn btn-success" onclick="update(this.id)" th:id="${currentRegister._id}" th:name="${currentRegister._id}">UPDATE</button>
+                    </span>
                     <br><br>
                 </div>
 
@@ -102,19 +106,23 @@
                         <input type="button" th:name="${dto.number}" class="btn btn-info" th:id="${dto.number}" th:value="${dto.number}">
                         <span th:if="${iter.count % 10 == 0}"> <br> <br> </span>
                     </th:block>
+                    <br>
+                </div>
+
+                <div class="predictive">
+                    CHECK
+                    <span class="sectionHeader"></span>
+                    <br>
+
                 </div>
                 <div class="predictive">
                     NUMBER PREDICTIVE ANALYSIS
                     <span class="sectionHeader"></span>
                     <br>
-                    <th:block th:each="dto, iter : ${adviceLesser}">
-                        <input type="button" th:name="${dto.number}" class="btn btn-info" th:id="${dto.number}" th:value="${dto.number}">
-                        <span th:if="${iter.count % 10 == 0}"> <br> <br> </span>
-                    </th:block>
+
                 </div>
 
             </div>
-
             <!-- RIGHT PANEL-->
             <div class="rightPanel">
 
@@ -133,55 +141,59 @@
                 </div>
 
                 <div class="highAmount">
-                    HIGH AMOUNT - #<span th:text="${higherAmount._id}" th:remove="tag" > id </span> <br>
-                    <span class="sectionHeader"></span>
-                    <span th:text="${higherAmount.date}" th:remove="tag" > date </span> <br>
-                    <th:block th:each="number, iter : ${higherAmount.numbers}">
-                        <input type="button" th:name="${number}" class="btn btn-success numberButton" th:id="${number}" th:value="${number}">
-                        <span th:if="${iter.count % 10 == 0}"> <br> <br> </span>
-                    </th:block>
-                    <br><br>
-
-                    <div class="drawPanelLeft" >
-                        <th:block th:each="amount : ${higherAmount.winnerCategoriesAmount}">
-                            W: <span th:text="${amount}" th:remove="tag" > amount </span> <br>
+                    <span th:if="${higherAmount != null}">
+                        HIGH AMOUNT - #<span th:text="${higherAmount._id}" th:remove="tag" > id </span> <br>
+                        <span class="sectionHeader"></span>
+                        <span th:text="${higherAmount.date}" th:remove="tag" > date </span> <br>
+                        <th:block th:each="number, iter : ${higherAmount.numbers}">
+                            <input type="button" th:name="${number}" class="btn btn-success numberButton" th:id="${number}" th:value="${number}">
+                            <span th:if="${iter.count % 10 == 0}"> <br> <br> </span>
                         </th:block>
-                    </div>
+                        <br><br>
 
-                    <div class="drawPanelRight" >
-                        <th:block th:each="dividend : ${higherAmount.winnerCategoriesDividends}">
-                            $: <span th:text="${dividend / 100}" th:remove="tag" > dividend </span> <br>
-                        </th:block>
-                    </div>
+                        <div class="drawPanelLeft" >
+                            <th:block th:each="amount : ${higherAmount.winnerCategoriesAmount}">
+                                W: <span th:text="${amount}" th:remove="tag" > amount </span> <br>
+                            </th:block>
+                        </div>
+
+                        <div class="drawPanelRight" >
+                            <th:block th:each="dividend : ${higherAmount.winnerCategoriesDividends}">
+                                $: <span th:text="${dividend / 100}" th:remove="tag" > dividend </span> <br>
+                            </th:block>
+                        </div>
+                    </span>
 
                 </div>
 
                 <div class="highDividend">
-                    HIGH DIVIDEND - #<span th:text="${higherDividend._id}" th:remove="tag" > id </span> <br>
-                    <span class="sectionHeader"></span>
-                    <span th:text="${higherDividend.date}" th:remove="tag" > date </span> <br>
-                    <th:block th:each="number, iter : ${higherDividend.numbers}">
-                        <input type="button" th:name="${number}" class="btn btn-success numberButton" th:id="${number}" th:value="${number}">
-                        <span th:if="${iter.count % 10 == 0}"> <br> <br> </span>
-                    </th:block>
-                    <br><br>
-
-                    <div class="drawPanelLeft" >
-                        <th:block th:each="amount : ${higherDividend.winnerCategoriesAmount}">
-                            W: <span th:text="${amount}" th:remove="tag" > amount </span> <br>
+                    <span th:if="${higherDividend != null}">
+                        HIGH DIVIDEND - #<span th:text="${higherDividend._id}" th:remove="tag" > id </span> <br>
+                        <span class="sectionHeader"></span>
+                        <span th:text="${higherDividend.date}" th:remove="tag" > date </span> <br>
+                        <th:block th:each="number, iter : ${higherDividend.numbers}">
+                            <input type="button" th:name="${number}" class="btn btn-success numberButton" th:id="${number}" th:value="${number}">
+                            <span th:if="${iter.count % 10 == 0}"> <br> <br> </span>
                         </th:block>
-                    </div>
+                        <br><br>
 
-                    <div class="drawPanelRight" >
-                        <th:block th:each="dividend : ${higherDividend.winnerCategoriesDividends}">
-                            $: <span th:text="${dividend / 100}" th:remove="tag" > dividend </span> <br>
-                        </th:block>
-                    </div>
+                        <div class="drawPanelLeft" >
+                            <th:block th:each="amount : ${higherDividend.winnerCategoriesAmount}">
+                                W: <span th:text="${amount}" th:remove="tag" > amount </span> <br>
+                            </th:block>
+                        </div>
+
+                        <div class="drawPanelRight" >
+                            <th:block th:each="dividend : ${higherDividend.winnerCategoriesDividends}">
+                                $: <span th:text="${dividend / 100}" th:remove="tag" > dividend </span> <br>
+                            </th:block>
+                        </div>
+                    </span>
 
                 </div>
 
                 <div class="probability">
-                    PROBABILITY (%)
+                    PROBABILITY
                     <span class="sectionHeader"></span>
                     <br>
                     <th:block th:each="dto, iter : ${probabilityDTO}">

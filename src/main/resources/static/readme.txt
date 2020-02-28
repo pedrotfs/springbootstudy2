@@ -1,11 +1,11 @@
 -Todo
-games/selected numbers
+game by number
+paginate selected
 predictive
+
 dockerfile
 docker-compose file
 jenkins job
-
-
 
 -commands used in development
 kafka-console-producer.sh --broker-list localhost:9092 --topic produced-requests
