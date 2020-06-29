@@ -52,3 +52,14 @@ function update(buttonId){
         })
         location.reload(true);
 }
+
+function check(value){
+		$.ajax({
+            url: '/check/',
+            type: 'GET',
+            data: { drawId: value},
+            contentType: 'application/json; charset=utf-8',
+            success: window.location.href = '/'
+        })
+        location.reload(true);
+}

@@ -66,7 +66,15 @@ public class MaestroWebController {
 
     private List<Draw> selectedDraws = new ArrayList<>();
 
+    private List<Draw> lastCheckedDraws = new ArrayList<>();
+
     private int count = 0;
+
+    private String checkValue = "check";
+
+    private final static String PANEL = "panel";
+
+    private final static Integer MAX = 5;
 
     @GetMapping("/")
     public String getPanelPage(Model model) throws EntityIdNotFoundException {
@@ -111,6 +119,7 @@ public class MaestroWebController {
         } else {
             selectedDraws = new ArrayList<>();
         }
+        treatCheckDrawsToMax();
         model.addAttribute("currentRegister", currentRegister);
         model.addAttribute("numbers", numberGenerator.generateNumbers(currentRegister));
         model.addAttribute("selectedNumbers", selectedNumbers);
@@ -123,7 +132,9 @@ public class MaestroWebController {
         model.addAttribute("adviceLesser", adviceLesser);
         model.addAttribute("selectedDraws", selectedDraws);
         model.addAttribute("selectedDrawsSize", selectedDraws.size());
-        return "panel";
+        model.addAttribute("lastCheckedDraws", lastCheckedDraws);
+        model.addAttribute("checkValue", checkValue);
+        return PANEL;
     }
 
     @GetMapping("/register")
@@ -145,7 +156,7 @@ public class MaestroWebController {
                 resetScreen(registerId);
             }
         }
-        return "panel";
+        return PANEL;
     }
 
     @GetMapping("/toggle-selection/")
@@ -158,14 +169,14 @@ public class MaestroWebController {
                 Collections.sort(selectedNumbers);
             }
         }
-        return "panel";
+        return PANEL;
     }
 
     @GetMapping("/clear-selection/")
     public String clearSelection(@RequestParam final String buttonId) {
         selectedNumbers = new ArrayList<>();
         selectedDraws = new ArrayList<>();
-        return "panel";
+        return PANEL;
     }
 
     @GetMapping("/remove-from-selection/")
@@ -173,7 +184,7 @@ public class MaestroWebController {
         if(selectedNumbers.contains(Integer.parseInt(buttonId))) {
             selectedNumbers = numberGenerator.treatSelectedNumberRemoval(buttonId, selectedNumbers);
         }
-        return "panel";
+        return PANEL;
     }
 
     @GetMapping("/update/")
@@ -183,7 +194,24 @@ public class MaestroWebController {
         Thread.sleep(1000);
         requestProducerService.produceRequest("");
         resetScreen(buttonId);
-        return "panel";
+        return PANEL;
+    }
+
+    @GetMapping("/check/")
+    public String check(@RequestParam final String drawId) throws EntityIdNotFoundException, InterruptedException {
+        try {
+            final String fullId = currentRegister.get_id() + drawId;
+            final Draw singleRegister = drawService.getSingleDraws(fullId);
+
+            if(lastCheckedDraws.stream().noneMatch(q -> q.get_id().equals(fullId))) {
+                lastCheckedDraws.add(0, singleRegister);
+            }
+            treatCheckDrawsToMax();
+            checkValue = drawId;
+        } catch(EntityIdNotFoundException e) {
+            System.out.println("register with id " + drawId + " not found. doing nothing");
+        }
+        return PANEL;
     }
 
     private void resetScreen(@RequestParam String buttonId) throws EntityIdNotFoundException {
@@ -193,6 +221,7 @@ public class MaestroWebController {
         adviceCommon = new ArrayList<>();
         adviceLesser = new ArrayList<>();
         selectedDraws = new ArrayList<>();
+        lastCheckedDraws = new ArrayList<>();
         higherDividend = null;
         higherAmount = null;
         count = 0;
@@ -204,5 +233,11 @@ public class MaestroWebController {
         document = new Document("_id", "mgs").append("limit", 6).append("count", 60);
         mongoTemplate.insert(document, "register");
         currentRegister = registerService.getSingleRegister("ltf");
+    }
+
+    private void treatCheckDrawsToMax() {
+        if(lastCheckedDraws.size() > MAX) {
+            lastCheckedDraws = lastCheckedDraws.subList(0,MAX);
+        }
     }
 }

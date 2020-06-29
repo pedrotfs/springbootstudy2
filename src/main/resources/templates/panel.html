@@ -109,9 +109,20 @@
                     <br>
                 </div>
 
-                <div class="predictive">
-                    CHECK
+                <div class="check">
+                    <br> CHECK <br>
                     <span class="sectionHeader"></span>
+                    <input type="text" th:value="${checkValue}" th:id="checkInput"> -
+                    <input type="button" th:name="${checkValueButton}" class="btn btn-info" th:id="${checkValueButton}" th:value="Check" onclick="check(checkInput.value)">
+                    <br>
+                    <th:block th:each="draw, iter : ${lastCheckedDraws}">
+                        <span th:text="${draw._id}" th:remove="tag" > id </span> -
+                        <b><span th:text="${draw.date}" th:remove="tag" > date </span> -</b>
+                        <th:block th:each="number, iter2 : ${draw.numbers}">
+                            <span th:text="${number}" th:remove="tag" > number </span>.
+                        </th:block>
+                        <br>
+                    </th:block>
                     <br>
 
                 </div>
