@@ -1,5 +1,4 @@
 -Todo
-game by number
 paginate selected
 predictive
 
@@ -7,10 +6,8 @@ dockerfile
 docker-compose file
 jenkins job
 
--commands used in development
-kafka-console-producer.sh --broker-list localhost:9092 --topic produced-requests
-kafka-server-start.sh config/server.properties
-zookeeper-server-start.sh config/zookeeper.properties
+update refresh (async await?)
+restyle
 
 sudo kill -9 $(sudo lsof -t -i:27017)
 mongod
