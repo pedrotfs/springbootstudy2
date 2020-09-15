@@ -274,7 +274,7 @@ public class MaestroWebController {
     }
 
     @GetMapping("/update/")
-    public String update(@RequestParam final String buttonId) throws EntityIdNotFoundException {
+    public String update(@RequestParam final String buttonId) throws EntityIdNotFoundException, InterruptedException {
         List<Draw> updateResults = new ArrayList<>();
         if(buttonId.equalsIgnoreCase(MGS)) {
             downloader.download(fileLocationMgs, fileNameMgs);
@@ -296,7 +296,9 @@ public class MaestroWebController {
                 }
             }).forEach(d -> drawRepository.save(d));
         }
+        Thread.sleep(1000);
         resetScreen(buttonId);
+
         return PANEL;
     }
 
