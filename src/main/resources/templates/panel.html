@@ -127,10 +127,11 @@
 
                 </div>
                 <div class="predictive">
-                    NUMBER PREDICTIVE ANALYSIS
+                    SELECTED NUMBER COMBINATION PREDICTIVE ANALYSIS
                     <span class="sectionHeader"></span>
                     <br>
-
+                    <span th:if="${predict != null}"><span th:text="${predict}" th:remove="tag" > predict </span> </span> <br>
+                    <span th:if="${aroundIn != null}"><span th:text="${aroundIn}" th:remove="tag" > aroundIn </span> </span> Weeks
                 </div>
 
             </div>

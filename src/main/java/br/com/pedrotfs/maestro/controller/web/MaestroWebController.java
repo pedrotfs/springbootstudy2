@@ -76,6 +76,8 @@ public class MaestroWebController {
 
     private final static Integer MAX = 5;
 
+    private static final Boolean PREDICT_MASTER_KEY = Boolean.TRUE;
+
     @GetMapping("/")
     public String getPanelPage(Model model) throws EntityIdNotFoundException {
         model.addAttribute("time", LocalDateTime.now());
@@ -116,9 +118,40 @@ public class MaestroWebController {
         if(!selectedNumbers.isEmpty()) {
             selectedDraws = drawService.findByRegisterIdAndNumberIn(currentRegister.get_id(), selectedNumbers);
             selectedDraws.sort(new DrawIdComparator());
+            if(PREDICT_MASTER_KEY) {
+                List<Integer> interval = new ArrayList<>();
+                List<Integer> intervalGrowth = new ArrayList<>();
+                Double predict = 0D;
+                interval.add(0);
+                Double adjust = 0D;
+                selectedDraws.forEach(d -> {
+                    interval.add(Integer.parseInt(d.get_id().substring(3)));
+                });
+                for(int i = 0; i < interval.size(); i++) {
+                    if(i == 0) {
+                        adjust = interval.get(i) + 0D;
+                        predict = adjust;
+                    } else {
+                        adjust = (interval.get(i) - interval.get(i - 1) + 0D);
+                        predict += adjust;
+                    }
+                }
+                if(!selectedDraws.isEmpty()) {
+                    predict = predict / selectedDraws.size();
+                    final Integer lastDrawId = Integer.parseInt(selectedDraws.get(selectedDraws.size() - 1).get_id().substring(3));
+                    while(predict + lastDrawId <= count) {
+                        predict = predict + adjust;
+                    }
+                    model.addAttribute("predict", predict.intValue() + lastDrawId);
+                    final int aroundIn = ((predict.intValue() + lastDrawId) - count) / 2;
+                    model.addAttribute("aroundIn", aroundIn);
+                }
+            }
         } else {
             selectedDraws = new ArrayList<>();
         }
+        //predictive will use selectedDraws for now
+
         treatCheckDrawsToMax();
         model.addAttribute("currentRegister", currentRegister);
         model.addAttribute("numbers", numberGenerator.generateNumbers(currentRegister));
