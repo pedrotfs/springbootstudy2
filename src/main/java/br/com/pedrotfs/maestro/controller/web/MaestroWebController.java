@@ -1,10 +1,13 @@
 package br.com.pedrotfs.maestro.controller.web;
 
+import br.com.pedrotfs.maestro.assembler.Assembler;
 import br.com.pedrotfs.maestro.domain.Draw;
 import br.com.pedrotfs.maestro.domain.Register;
 import br.com.pedrotfs.maestro.exception.EntityIdNotFoundException;
-import br.com.pedrotfs.maestro.kafka.services.RegisterConsumerService;
-import br.com.pedrotfs.maestro.kafka.services.RequestProducerService;
+import br.com.pedrotfs.maestro.file.Decompresser;
+import br.com.pedrotfs.maestro.file.Downloader;
+import br.com.pedrotfs.maestro.file.Parser;
+import br.com.pedrotfs.maestro.repository.DrawRepository;
 import br.com.pedrotfs.maestro.service.DrawCalculationsService;
 import br.com.pedrotfs.maestro.service.RegisterService;
 import br.com.pedrotfs.maestro.service.impl.DrawServiceImpl;
@@ -13,6 +16,8 @@ import br.com.pedrotfs.maestro.util.ProbabilityDTO;
 import br.com.pedrotfs.maestro.util.comparator.DrawIdComparator;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,6 +32,30 @@ import java.util.List;
 @Controller
 public class MaestroWebController {
 
+    @Value("${ltf.file.source.location}")
+    private String fileLocation;
+
+    @Value("${ltf.file.target.name}")
+    private String fileName;
+
+    @Value("${ltf.file.unzip.name}")
+    private String extractTo;
+
+    @Value("${ltf.file.zipped}")
+    private String zippedName;
+
+    @Value("${mgs.file.source.location}")
+    private String fileLocationMgs;
+
+    @Value("${mgs.file.target.name}")
+    private String fileNameMgs;
+
+    @Value("${mgs.file.unzip.name}")
+    private String extractToMgs;
+
+    @Value("${mgs.file.zipped}")
+    private String zippedNameMgs;
+
     @Autowired
     private RegisterService registerService;
 
@@ -37,16 +66,30 @@ public class MaestroWebController {
     private MongoTemplate mongoTemplate;
 
     @Autowired
-    private RequestProducerService requestProducerService;
-
-    @Autowired
-    private RegisterConsumerService registerConsumerService;
-
-    @Autowired
     private DrawCalculationsService drawCalculationsService;
 
     @Autowired
     private DrawServiceImpl drawService;
+
+    @Autowired
+    private Downloader downloader;
+
+    @Autowired
+    private Decompresser decompresser;
+
+    @Autowired
+    @Qualifier("parserImpl")
+    private Parser parser;
+
+    @Autowired
+    @Qualifier("parserMgsImpl")
+    private Parser parserMgsImpl;
+
+    @Autowired
+    private Assembler assembler;
+
+    @Autowired
+    private DrawRepository drawRepository;
 
     private List<Register> registerList = new ArrayList<>();
 
@@ -73,6 +116,10 @@ public class MaestroWebController {
     private String checkValue = "check";
 
     private final static String PANEL = "panel";
+
+    private final static String MGS = "mgs";
+
+    private final static String LTF = "ltf";
 
     private final static Integer MAX = 5;
 
@@ -119,40 +166,17 @@ public class MaestroWebController {
             selectedDraws = drawService.findByRegisterIdAndNumberIn(currentRegister.get_id(), selectedNumbers);
             selectedDraws.sort(new DrawIdComparator());
             if(PREDICT_MASTER_KEY) {
-                List<Integer> interval = new ArrayList<>();
-                List<Integer> intervalGrowth = new ArrayList<>();
-                Double predict = 0D;
-                interval.add(0);
-                Double adjust = 0D;
-                selectedDraws.forEach(d -> {
-                    interval.add(Integer.parseInt(d.get_id().substring(3)));
-                });
-                for(int i = 0; i < interval.size(); i++) {
-                    if(i == 0) {
-                        adjust = interval.get(i) + 0D;
-                        predict = adjust;
-                    } else {
-                        adjust = (interval.get(i) - interval.get(i - 1) + 0D);
-                        predict += adjust;
-                    }
-                }
-                if(!selectedDraws.isEmpty()) {
-                    predict = predict / selectedDraws.size();
-                    final Integer lastDrawId = Integer.parseInt(selectedDraws.get(selectedDraws.size() - 1).get_id().substring(3));
-                    while(predict + lastDrawId <= count) {
-                        predict = predict + adjust;
-                    }
-                    model.addAttribute("predict", predict.intValue() + lastDrawId);
-                    final int aroundIn = ((predict.intValue() + lastDrawId) - count) / 2;
-                    model.addAttribute("aroundIn", aroundIn);
-                }
+                doPredictions(model);
             }
         } else {
             selectedDraws = new ArrayList<>();
         }
-        //predictive will use selectedDraws for now
-
         treatCheckDrawsToMax();
+        fillModell(model);
+        return PANEL;
+    }
+
+    private void fillModell(Model model) {
         model.addAttribute("currentRegister", currentRegister);
         model.addAttribute("numbers", numberGenerator.generateNumbers(currentRegister));
         model.addAttribute("selectedNumbers", selectedNumbers);
@@ -167,7 +191,36 @@ public class MaestroWebController {
         model.addAttribute("selectedDrawsSize", selectedDraws.size());
         model.addAttribute("lastCheckedDraws", lastCheckedDraws);
         model.addAttribute("checkValue", checkValue);
-        return PANEL;
+    }
+
+    private void doPredictions(Model model) {
+        List<Integer> interval = new ArrayList<>();
+        List<Integer> intervalGrowth = new ArrayList<>();
+        Double predict = 0D;
+        interval.add(0);
+        Double adjust = 0D;
+        selectedDraws.forEach(d -> {
+            interval.add(Integer.parseInt(d.get_id().substring(3)));
+        });
+        for(int i = 0; i < interval.size(); i++) {
+            if(i == 0) {
+                adjust = interval.get(i) + 0D;
+                predict = adjust;
+            } else {
+                adjust = (interval.get(i) - interval.get(i - 1) + 0D);
+                predict += adjust;
+            }
+        }
+        if(!selectedDraws.isEmpty()) {
+            predict = predict / selectedDraws.size();
+            final Integer lastDrawId = Integer.parseInt(selectedDraws.get(selectedDraws.size() - 1).get_id().substring(3));
+            while(predict + lastDrawId <= count) {
+                predict = predict + adjust;
+            }
+            model.addAttribute("predict", predict.intValue() + lastDrawId);
+            final int aroundIn = ((predict.intValue() + lastDrawId) - count) / 2;
+            model.addAttribute("aroundIn", aroundIn);
+        }
     }
 
     @GetMapping("/register")
@@ -221,17 +274,34 @@ public class MaestroWebController {
     }
 
     @GetMapping("/update/")
-    public String update(@RequestParam final String buttonId) throws EntityIdNotFoundException, InterruptedException {
-        requestProducerService.produceRequest(buttonId);
-        registerConsumerService.consumeRegisters();
-        Thread.sleep(1000);
-        requestProducerService.produceRequest("");
+    public String update(@RequestParam final String buttonId) throws EntityIdNotFoundException {
+        List<Draw> updateResults = new ArrayList<>();
+        if(buttonId.equalsIgnoreCase(MGS)) {
+            downloader.download(fileLocationMgs, fileNameMgs);
+            decompresser.decompress(extractToMgs, fileNameMgs, zippedNameMgs);
+            updateResults = assembler.assembleMgs(parserMgsImpl.parse(extractToMgs));
+
+        } else if(buttonId.equalsIgnoreCase(LTF)) {
+            downloader.download(fileLocation, fileName);
+            decompresser.decompress(extractTo, fileName, zippedName);
+            updateResults = assembler.assemble(parser.parse(extractTo));
+        }
+        if(!updateResults.isEmpty()) {
+            updateResults.stream().filter(r -> {
+                try {
+                    drawService.getSingleDraws(r.get_id());
+                    return false;
+                } catch (EntityIdNotFoundException e) {
+                    return true;
+                }
+            }).forEach(d -> drawRepository.save(d));
+        }
         resetScreen(buttonId);
         return PANEL;
     }
 
     @GetMapping("/check/")
-    public String check(@RequestParam final String drawId) throws EntityIdNotFoundException, InterruptedException {
+    public String check(@RequestParam final String drawId) {
         try {
             final String fullId = currentRegister.get_id() + drawId;
             final Draw singleRegister = drawService.getSingleDraws(fullId);
