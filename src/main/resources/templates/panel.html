@@ -202,10 +202,9 @@
                     </a>
                     &nbsp;
                                        
-                    <input type="button" th:name="${dto.chance}" class="btn btn-warning" th:id="${dto.chance}" th:value="${dto.chance}">                    
+                    <input type="button" th:name="${dto.chance}" class="button-percent" th:id="${dto.chance}" th:value="${dto.chance}">%
                     
-                    <span th:if="${iter.count % 5 == 0}"> <br> <br> </span>
-                    <span th:unless="${iter.count % 5 == 0}"> - </span>
+                    <span th:if="${iter.count % 5 == 0}"> <br> <br> </span>                    
                 </th:block>
             </div>
 

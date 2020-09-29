@@ -209,3 +209,7 @@ body {
 .predictive {
     background-color: #f3f3f3;
 }
+
+.button-percent {
+    border:none;
+}
