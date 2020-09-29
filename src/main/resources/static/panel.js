@@ -45,10 +45,11 @@ function removeFromSelection(buttonId){
 function update(buttonId){
 		$.ajax({
             url: '/update/',
+            async: false,
             type: 'GET',
             data: { buttonId: buttonId},
             contentType: 'application/json; charset=utf-8',
-            success: window.location.href = '/'
+            done: window.location.href = '/'
         })
         location.reload(true);
 }

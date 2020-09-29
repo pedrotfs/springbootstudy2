@@ -49,7 +49,7 @@ public class DrawCalculationsServiceImpl implements DrawCalculationsService {
         for(Integer i = 1; i <= register.getCount(); i++) {
             final Integer finalInteger = i;
             chance = (double) draws.stream().filter(d -> d.getNumbers().contains(finalInteger)).count() / draws.size();
-            ProbabilityDTO dto = new ProbabilityDTO(finalInteger, new BigDecimal(chance).setScale(2, BigDecimal.ROUND_DOWN).doubleValue());
+            ProbabilityDTO dto = new ProbabilityDTO(finalInteger, new BigDecimal(chance).setScale(2, BigDecimal.ROUND_DOWN).toString());
             dtos.add(dto);
         }
         dtos.sort(new ProbabilityComparator());

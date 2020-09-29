@@ -27,6 +27,16 @@ dependencies {
 	compile group: 'org.springframework.boot', name: 'spring-boot-devtools', version: '2.2.0.RELEASE'
 	compile group: 'org.webjars', name: 'jquery', version: '3.4.1'
 	compile 'org.jsoup:jsoup:1.11.3'
+
+	configurations {
+		developmentOnly
+		runtimeClasspath {
+			extendsFrom developmentOnly
+		}
+	}
+	dependencies {
+		developmentOnly("org.springframework.boot:spring-boot-devtools")
+	}
 }
 
 test {

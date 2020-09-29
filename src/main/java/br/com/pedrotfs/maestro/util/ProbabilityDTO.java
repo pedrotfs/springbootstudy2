@@ -4,7 +4,7 @@ public class ProbabilityDTO {
 
     private Integer number;
 
-    private Double chance;
+    private String chance;
 
     public Integer getNumber() {
         return number;
@@ -14,15 +14,15 @@ public class ProbabilityDTO {
         this.number = number;
     }
 
-    public Double getChance() {
+    public String getChance() {
         return chance;
     }
 
-    public void setChance(Double chance) {
+    public void setChance(String chance) {
         this.chance = chance;
     }
 
-    public ProbabilityDTO(Integer number, Double chance) {
+    public ProbabilityDTO(Integer number, String chance) {
         this.number = number;
         this.chance = chance;
     }

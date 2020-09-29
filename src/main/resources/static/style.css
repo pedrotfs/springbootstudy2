@@ -1,41 +1,112 @@
 /*
 classes
-
 */
+/*all*/
+body {
+    margin: 0;
+    padding: 0;
+}
 
+html, body {
+    background-color: #fff;
+    /*color: #333;*/
+    font-family: 'Lato', 'Arial', sans-serif;
+    /* font-size: 20px; */
+    font-weight: 400;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+}
+
+/* header */
+.header {
+    background-attachment: fixed;
+    background-image: linear-gradient(rgba(0,0,150,0.75), rgba(0,0,0,160.75)) ,url(img/draw.jpg);
+    background-size: 70%;
+    color: #e3e3e3;
+    width: 100%;
+    padding: 5px;
+    margin-top: 0;
+    height: 30vh;
+}
+
+.header p {
+    padding: 0;
+    margin: 0;
+}
+
+.header__heroheader {
+    margin-top: 40px;
+    padding-top: 10px;
+    text-transform: uppercase;
+    font-size: 300%;
+    font-weight: 300;
+    line-height: 120%;
+}
+
+.header__heroimage {
+    width: 75;
+    height: 75px;
+    float: left;
+    margin-left: 40px;
+    margin-right: 40px;
+}
+
+.header__section {
+    display: block;
+    margin-top: 60px;
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-bottom: 40px;
+}
+
+.header__info {
+    display: block;
+    font-weight: 200%;
+    float: left;
+}
+
+.header__registerbuttons {
+    margin-right: 40px;
+    float: right;    
+}
+
+.header__registerbuttons a {
+    margin-left: 20px;
+}
+
+.header__registerbuttons a:link,  .header__registerbuttons a:visited{
+    text-decoration: none;
+    color:#ffffff;
+}
+
+.header__registerbuttons a:hover,  .header__registerbuttons a:active{
+    text-decoration: underline;
+    color:#ffffff;
+}
+
+/**body*/
 .main {
-    margin 1 auto;
-    width: 1602px;
+    margin: 1 auto;
+    width: 100%;
     background: #ffffff;
 }
 
 .leftPanel {
-    background: #f2f2f2;
-    display: inline-block;
-    width: 800px;
-    align: left;
+    background: #ffffff;
+    display: block;
+    width: 50%;
     float: left;
     height: 100%;
+    border: 1px #000000 solid;
 }
 
 .rightPanel {
-    background: #f0f0f0;
-    display: inline-block;
-    width: 800px;
-    align: right;
+    background: #f3f3f3;
+    display: block;
+    width: 49.75%;
     height: 100%;
-}
-
-.drawPanelLeft {
-    display: inline-block;
-    width: 48%;
-    align: left;
-}
-
-.drawPanelRight {
-    display: inline-block;
-    width: 48%;
-    align: right;
+    float: right;
+    border: 1px #000000 solid;
 }
 
 .sectionHeader {
@@ -45,6 +116,91 @@ classes
     display: block;
 }
 
-.numberButton {
+.numberButton, .numberButton__toggle {
     width: 60px;
+    margin: 5px;
+    padding: 5px;
+    border-radius: 100%;
+    cursor: pointer;
+    transition: background-color 200ms;
+}
+
+.numberButton {
+    color: #ffffff;
+    border: 2px solid #2222ee;
+    background-color: #2222ee;
+}
+
+.numberButton__toggle {
+    color: #ffffff;
+    background-color: #292974;
+    border: 2px solid #1c1c4d;
+}
+
+.numberButton:hover {
+    color: #ffffff;
+    background-color: #6969db;
+    border: 2px solid #6969db;
+}
+
+.numberButton__toggle:hover {
+    color: #ffffff;
+    background-color: #39399b;
+    border: 2px solid #2a2a77;
+}
+
+.check, .numbers, .selected,  .probability__mos, .probability__least,
+.predictive, .sync, .drawSelect, .highAmount, .highDividend, .probability {
+    padding-right: 20px;
+    padding-left: 20px;
+}
+
+.check, .drawSelect, .highAmount{
+    background-color: #ffffff;
+}
+
+.numbers, .sync, .probability, .highDividend {
+    background-color: #f3f3f3;
+}
+
+.drawSelect {
+    line-height: 120%;
+    padding-bottom: 20px;
+}
+
+.numbers__container {
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding-right: 10px;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+}
+
+.check__title--line {
+    margin: 10px auto;
+    text-transform: uppercase;
+    padding-top: 10px;
+}
+
+.check__results {
+    margin: 10px auto;
+}
+
+.selected__content {
+    padding-bottom: 20px;
+}
+
+.probability__mos {
+    padding-bottom: 20px;
+    background-color: #f3f3f3;
+}
+
+.probability__least {
+    padding-bottom: 20px;
+    background-color: #ffffff;
+}
+
+.predictive {
+    background-color: #f3f3f3;
 }

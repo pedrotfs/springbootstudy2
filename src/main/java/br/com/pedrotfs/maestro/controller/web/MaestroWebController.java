@@ -127,7 +127,9 @@ public class MaestroWebController {
 
     @GetMapping("/")
     public String getPanelPage(Model model) throws EntityIdNotFoundException {
-        model.addAttribute("time", LocalDateTime.now());
+        final LocalDateTime now = LocalDateTime.now();
+        final String time = now.getHour() + ":" + now.getMinute() + ":" +  now.getSecond();
+        model.addAttribute("time", time);
         if(registerList.isEmpty()) {
             registerList = registerService.getRegisters();
         }
