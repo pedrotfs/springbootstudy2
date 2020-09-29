@@ -136,7 +136,7 @@ public class MaestroWebController {
         model.addAttribute("registers", registerList);
         if(currentRegister == null) {
             try {
-                currentRegister = registerService.getSingleRegister("ltf");
+                currentRegister = registerService.getSingleRegister("mgs");
             } catch(EntityIdNotFoundException e) {
                 if(currentRegister == null) {
                     populateEssentialData();
