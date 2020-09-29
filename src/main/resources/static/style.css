@@ -91,6 +91,11 @@ html, body {
     background: #ffffff;
 }
 
+body {
+    background-image: linear-gradient(rgba(150, 150, 233, 0.75), rgba(150, 150, 233, 0.75)) ,url(img/ltf.jpg);
+    background-attachment: fixed;
+}
+
 .leftPanel {
     background: #ffffff;
     display: block;
@@ -163,7 +168,7 @@ html, body {
     background-color: #f3f3f3;
 }
 
-.drawSelect {
+.drawSelect, .predictive {
     line-height: 120%;
     padding-bottom: 20px;
 }
