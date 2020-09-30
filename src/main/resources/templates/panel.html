@@ -126,7 +126,7 @@
                 <div class="check__title--line">Mais usados (em ordem)</div>                              
                 
                 <th:block th:each="dto, iter : ${adviceCommon}">
-                    <a th:name="${dto.number}" class="numberButton" th:id="${dto.number}" th:value="${dto.number}">
+                    <a th:name="${dto.number}" class="numberButton__toggle" th:id="${dto.number}" th:value="${dto.number}">
                         <span th:if="${dto.number lt 10}">
                             0<span th:text="${dto.number}" th:remove="tag" > id </span>  
                         </span>
@@ -142,7 +142,7 @@
             <div class="probability__least">
                 <div class="check__title--line">Menos usados (em ordem)</div>                              
                 <th:block th:each="dto, iter : ${adviceLesser}">
-                    <a th:name="${dto.number}" class="numberButton__toggle" th:id="${dto.number}" th:value="${dto.number}">
+                    <a th:name="${dto.number}" class="numberButton" th:id="${dto.number}" th:value="${dto.number}">
                         <span th:if="${dto.number lt 10}">
                             0<span th:text="${dto.number}" th:remove="tag" > id </span>  
                         </span>
@@ -214,7 +214,7 @@
                     
                     <span th:text="${higherAmount.date}" th:remove="tag" > date </span>
                     <th:block th:each="number, iter : ${higherAmount.numbers}">
-                        <a th:name="${number}" class="numberButton" th:id="${number}" th:value="${number}">
+                        <a th:name="${number}" class="numberButton__toggle" th:id="${number}" th:value="${number}">
                             <span th:if="${number lt 10}">
                                 0<span th:text="${number}" th:remove="tag" > id </span>  
                             </span>
@@ -247,7 +247,7 @@
                     <div class="check__title--line">Mais vencedores - #<span th:text="${higherDividend._id}" th:remove="tag" > id </span></div>
                     <span th:text="${higherDividend.date}" th:remove="tag" > date </span>
                     <th:block th:each="number, iter : ${higherDividend.numbers}">
-                        <a th:name="${number}" class="numberButton__toggle" th:id="${number}" th:value="${number}">
+                        <a th:name="${number}" class="numberButton" th:id="${number}" th:value="${number}">
                             <span th:if="${number lt 10}">
                                 0<span th:text="${number}" th:remove="tag" > id </span>  
                             </span>
