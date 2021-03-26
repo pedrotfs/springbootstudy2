@@ -30,6 +30,7 @@ out/
 /dist/
 /nbdist/
 /.nb-gradle/
+/src/main/resources/docker/mongo/volume/
 
 ### VS Code ###
 .vscode/
