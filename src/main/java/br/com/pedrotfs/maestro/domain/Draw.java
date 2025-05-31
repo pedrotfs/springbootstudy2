@@ -20,6 +20,12 @@ public class Draw {
 
     private String date;
 
+    private String acumulado;
+
+    private String city;
+
+    private String obs;
+
     public String get_id() {
         return _id;
     }
@@ -66,5 +72,29 @@ public class Draw {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getAcumulado() {
+        return acumulado;
+    }
+
+    public void setAcumulado(String acumulado) {
+        this.acumulado = acumulado;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getObs() {
+        return obs;
+    }
+
+    public void setObs(String obs) {
+        this.obs = obs;
     }
 }

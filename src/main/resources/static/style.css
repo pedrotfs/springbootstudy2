@@ -20,7 +20,7 @@ html, body {
 /* header */
 .header {
     background-attachment: fixed;
-    background-image: linear-gradient(rgba(0,0,150,0.75), rgba(0,0,0,160.75)) ,url(img/draw.jpg);
+    background-image: linear-gradient(rgba(0,150,0,0.75), rgba(0,0,0,160.75)) ,url(img/draw.jpg);
     background-size: 70%;
     color: #e3e3e3;
     width: 100%;
@@ -92,7 +92,7 @@ html, body {
 }
 
 body {
-    background-image: linear-gradient(rgba(150, 150, 233, 0.75), rgba(150, 150, 233, 0.75)) ,url(img/ltf.jpg);
+    background-image: linear-gradient(rgba(150, 233, 150, 0.75), rgba(150, 233, 150, 0.75)) ,url(img/ltf.jpg);
     background-attachment: fixed;
 }
 
@@ -132,13 +132,13 @@ body {
 
 .numberButton {
     color: #ffffff;
-    border: 2px solid #2222ee;
-    background-color: #2222ee;
+    border: 2px solid #228822;
+    background-color: #228822;
 }
 
 .numberButton__toggle {
     color: #ffffff;
-    background-color: #292974;
+    background-color: #297429;
     border: 2px solid #1c1c4d;
 }
 

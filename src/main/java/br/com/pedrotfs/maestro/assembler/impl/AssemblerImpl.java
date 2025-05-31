@@ -61,48 +61,56 @@ public class AssemblerImpl implements Assembler {
         final String[] split = line.split(matchingPatternHolder.getSplit());
         Draw draw = new Draw();
 
-        draw.set_id("mgs" + split[1]);
+        draw.set_id("mgs" + split[0]);
         draw.setRegisterId("mgs");
         populateNumbersMgs(split, draw);
         populateCategoriesAmountMgs(split, draw);
         populateCategoriesDividendsMgs(split, draw);
+
+        if(split[15] != null) {
+            draw.setCity(split[15]);
+        } else {
+            draw.setCity("");
+        }
+        if(split[13] != null) {
+            draw.setAcumulado(split[13]);
+        } else {
+            draw.setAcumulado("R$ 0,00");
+        }
+        if(split[16] != null) {
+            draw.setObs(split[16]);
+        } else {
+            draw.setObs("");
+        }
 
         Collections.sort(draw.getNumbers());
         Collections.sort(draw.getWinnerCategoriesDividends());
         Collections.sort(draw.getWinnerCategoriesAmount());
         Collections.reverse(draw.getWinnerCategoriesDividends());
 
-        draw.setDate(split[2]);
+        draw.setDate(split[14]);
         result.add(draw);
     }
 
-    private void populateCategoriesDividends(String[] split, Draw d) {
-        d.getWinnerCategoriesDividends().add(Long.parseLong(split[24].replace(".", "").replace(",", "")));
-        d.getWinnerCategoriesDividends().add(Long.parseLong(split[25].replace(".", "").replace(",", "")));
-        d.getWinnerCategoriesDividends().add(Long.parseLong(split[26].replace(".", "").replace(",", "")));
-        d.getWinnerCategoriesDividends().add(Long.parseLong(split[27].replace(".", "").replace(",", "")));
-        d.getWinnerCategoriesDividends().add(Long.parseLong(split[28].replace(".", "").replace(",", "")));
+    private void populateNumbersMgs(String[] split, Draw draw) {
+        draw.getNumbers().add(Integer.parseInt(split[1]));
+        draw.getNumbers().add(Integer.parseInt(split[2]));
+        draw.getNumbers().add(Integer.parseInt(split[3]));
+        draw.getNumbers().add(Integer.parseInt(split[4]));
+        draw.getNumbers().add(Integer.parseInt(split[5]));
+        draw.getNumbers().add(Integer.parseInt(split[6]));
     }
 
     private void populateCategoriesDividendsMgs(String[] split, Draw draw) {
-        draw.getWinnerCategoriesDividends().add(Long.parseLong(split[11].replace(".", "").replace(",", "")));
-        draw.getWinnerCategoriesDividends().add(Long.parseLong(split[13].replace(".", "").replace(",", "")));
-        draw.getWinnerCategoriesDividends().add(Long.parseLong(split[15].replace(".", "").replace(",", "")));
-        draw.getWinnerCategoriesDividends().add(Long.parseLong(split[17].replace(".", "").replace(",", "")));
-    }
-
-    private void populateCategoriesAmount(String[] split, Draw draw) {
-        draw.getWinnerCategoriesAmount().add(Integer.parseInt(split[19].replace(".", "").replace(",", "")));
-        draw.getWinnerCategoriesAmount().add(Integer.parseInt(split[20].replace(".", "").replace(",", "")));
-        draw.getWinnerCategoriesAmount().add(Integer.parseInt(split[21].replace(".", "").replace(",", "")));
-        draw.getWinnerCategoriesAmount().add(Integer.parseInt(split[22].replace(".", "").replace(",", "")));
-        draw.getWinnerCategoriesAmount().add(Integer.parseInt(split[23].replace(".", "").replace(",", "")));
+        draw.getWinnerCategoriesDividends().add(Long.parseLong(split[8].replaceAll("[^\\d]", "")));
+        draw.getWinnerCategoriesDividends().add(Long.parseLong(split[10].replaceAll("[^\\d]", "")));
+        draw.getWinnerCategoriesDividends().add(Long.parseLong(split[12].replaceAll("[^\\d]", "")));
     }
 
     private void populateCategoriesAmountMgs(String[] split, Draw draw) {
-        draw.getWinnerCategoriesAmount().add(Integer.parseInt(split[10].replace(".", "").replace(",", "")));
-        draw.getWinnerCategoriesAmount().add(Integer.parseInt(split[12].replace(".", "").replace(",", "")));
-        draw.getWinnerCategoriesAmount().add(Integer.parseInt(split[14].replace(".", "").replace(",", "")));
+        draw.getWinnerCategoriesAmount().add(Integer.parseInt(split[7].replaceAll("[^\\d]", "")));
+        draw.getWinnerCategoriesAmount().add(Integer.parseInt(split[9].replaceAll("[^\\d]", "")));
+        draw.getWinnerCategoriesAmount().add(Integer.parseInt(split[11].replaceAll("[^\\d]", "")));
     }
 
     private void populateNumbers(String[] split, Draw draw) {
@@ -123,12 +131,19 @@ public class AssemblerImpl implements Assembler {
         draw.getNumbers().add(Integer.parseInt(split[17]));
     }
 
-    private void populateNumbersMgs(String[] split, Draw draw) {
-        draw.getNumbers().add(Integer.parseInt(split[3]));
-        draw.getNumbers().add(Integer.parseInt(split[4]));
-        draw.getNumbers().add(Integer.parseInt(split[5]));
-        draw.getNumbers().add(Integer.parseInt(split[6]));
-        draw.getNumbers().add(Integer.parseInt(split[7]));
-        draw.getNumbers().add(Integer.parseInt(split[8]));
+    private void populateCategoriesDividends(String[] split, Draw d) {
+        d.getWinnerCategoriesDividends().add(Long.parseLong(split[24].replace(".", "").replace(",", "")));
+        d.getWinnerCategoriesDividends().add(Long.parseLong(split[25].replace(".", "").replace(",", "")));
+        d.getWinnerCategoriesDividends().add(Long.parseLong(split[26].replace(".", "").replace(",", "")));
+        d.getWinnerCategoriesDividends().add(Long.parseLong(split[27].replace(".", "").replace(",", "")));
+        d.getWinnerCategoriesDividends().add(Long.parseLong(split[28].replace(".", "").replace(",", "")));
+    }
+
+    private void populateCategoriesAmount(String[] split, Draw draw) {
+        draw.getWinnerCategoriesAmount().add(Integer.parseInt(split[19].replace(".", "").replace(",", "")));
+        draw.getWinnerCategoriesAmount().add(Integer.parseInt(split[20].replace(".", "").replace(",", "")));
+        draw.getWinnerCategoriesAmount().add(Integer.parseInt(split[21].replace(".", "").replace(",", "")));
+        draw.getWinnerCategoriesAmount().add(Integer.parseInt(split[22].replace(".", "").replace(",", "")));
+        draw.getWinnerCategoriesAmount().add(Integer.parseInt(split[23].replace(".", "").replace(",", "")));
     }
 }
