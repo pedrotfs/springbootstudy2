@@ -63,6 +63,7 @@
                     <th:block th:each="draw, iter : ${lastCheckedDraws}">
                         <span th:text="${draw._id}" th:remove="tag" > id </span> -
                         <b><span th:text="${draw.date}" th:remove="tag" > date </span> -</b>
+                        <b><span th:text="${draw.city}" th:remove="tag" > date </span> -</b>
                         <th:block th:each="number, iter2 : ${draw.numbers}">
                             <span th:text="${number}" th:remove="tag" > number </span>.
                         </th:block>
