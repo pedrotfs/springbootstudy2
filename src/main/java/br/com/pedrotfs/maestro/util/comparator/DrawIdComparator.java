@@ -11,7 +11,7 @@ public class DrawIdComparator  implements Comparator<Draw> {
         if(a.get_id().equals(b.get_id())) {
             return 0;
         }
-        else if(Integer.parseInt(a.get_id().substring(3)) < Integer.parseInt(b.get_id().substring(3))) {
+        else if(Integer.parseInt(a.get_id().replaceAll("[^\\d]", "")) < Integer.parseInt(b.get_id().replaceAll("[^\\d]", ""))) {
             return -1;
         } else {
             return 1;

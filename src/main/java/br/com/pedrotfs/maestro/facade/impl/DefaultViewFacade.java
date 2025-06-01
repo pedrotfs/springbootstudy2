@@ -101,9 +101,7 @@ public class DefaultViewFacade implements ViewFacade {
         if(!selectedNumbers.isEmpty()) {
             selectedDraws = drawService.findByRegisterIdAndNumberIn(currentRegister.get_id(), selectedNumbers);
             selectedDraws.sort(new DrawIdComparator());
-            if(PREDICT_MASTER_KEY) {
-                doPredictions(model);
-            }
+
         } else {
             selectedDraws = new ArrayList<>();
         }
