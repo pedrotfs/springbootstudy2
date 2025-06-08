@@ -16,6 +16,7 @@ import java.util.List;
 
 import static br.com.pedrotfs.maestro.util.Constants.LTF;
 import static br.com.pedrotfs.maestro.util.Constants.MGS;
+import static br.com.pedrotfs.maestro.util.Constants.QN;
 
 @Component
 public class DefaultUpdateFacade implements UpdateFacade {
@@ -31,6 +32,12 @@ public class DefaultUpdateFacade implements UpdateFacade {
 
     @Value("${mgs.file.target.name}")
     private String fileNameMgs;
+
+    @Value("${qn.file.source.location}")
+    private String fileLocationQn;
+
+    @Value("${qn.file.target.name}")
+    private String fileNameQn;
 
     @Autowired
     private Downloader downloader;
@@ -54,8 +61,10 @@ public class DefaultUpdateFacade implements UpdateFacade {
         } else if(buttonId.equalsIgnoreCase(LTF)) {
             downloader.download(fileLocation, fileName);
             updateResults = parser.parse(fileName, buttonId, count);
+        } else if(buttonId.equalsIgnoreCase(QN)) {
+            downloader.download(fileLocationQn, fileNameQn);
+            updateResults = parser.parse(fileNameQn, buttonId, 0);
         }
-
         if(!updateResults.isEmpty()) {
             updateResults.stream().filter(r -> {
                 try {

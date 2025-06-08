@@ -10,6 +10,8 @@ public class Constants {
 
     public final static String LTF = "ltf";
 
+    public final static String QN = "qn";
+
     public final static Integer MAX = 5;
 
     public static final Boolean PREDICT_MASTER_KEY = Boolean.TRUE;

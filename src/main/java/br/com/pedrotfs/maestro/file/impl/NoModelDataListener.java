@@ -4,6 +4,7 @@ import br.com.pedrotfs.maestro.domain.Draw;
 import br.com.pedrotfs.maestro.util.Constants;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
+import org.apache.tomcat.util.bcel.Const;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,17 +27,59 @@ public class NoModelDataListener extends AnalysisEventListener<Map<Integer, Stri
     public void invoke(Map<Integer, String> row, AnalysisContext context) {
         Draw d = new Draw();
         d.setRegisterId(register);
-        d.set_id(row.get(0));
+        d.set_id(register + row.get(0));
         d.setDate(row.get(1));
-        if(Long.parseLong(d.get_id()) > this.startFrom) {
+        int substringIndex = 3;
+        if (register.equals(Constants.QN)) {
+            substringIndex = 2;
+        }
+        if(Long.parseLong(d.get_id().substring(substringIndex)) > this.startFrom) {
             if(register.equals(Constants.MGS)) {
                 populateMgs(row, d);
             }
             if(register.equals(Constants.LTF)) {
                 populateLtf(row, d);
             }
+            if(register.equals(Constants.QN)) {
+                populateQn(row, d);
+            }
             this.draws.add(d);
         }
+    }
+
+    private void populateQn(Map<Integer, String> row, Draw d) {
+        if(row.get(8) == null) {
+            d.setCity("");
+        } else {
+            d.setCity(row.get(8));
+        }
+
+        if(row.get(20) == null) {
+            d.setObs("");
+        } else {
+            d.setObs(row.get(20));
+        }
+
+        if(row.get(19) == null) {
+            d.setAcumulado("R$ 0,00");
+        } else {
+            d.setAcumulado(row.get(19));
+        }
+
+        //bolas
+        for(int i = 2; i <= 6; i++) {
+            d.getNumbers().add(Integer.parseInt(row.get(i)));
+        }
+
+        //ganhadores - numero
+        d.getWinnerCategoriesAmount().add(Integer.parseInt(row.get(7)));
+        d.getWinnerCategoriesAmount().add(Integer.parseInt(row.get(10)));
+        d.getWinnerCategoriesAmount().add(Integer.parseInt(row.get(12)));
+        //ganhadores - valores
+        d.getWinnerCategoriesDividends().add(Long.parseLong(row.get(9).replaceAll("[^\\d]", "")));
+        d.getWinnerCategoriesDividends().add(Long.parseLong(row.get(11).replaceAll("[^\\d]", "")));
+        d.getWinnerCategoriesDividends().add(Long.parseLong(row.get(13).replaceAll("[^\\d]", "")));
+
     }
 
     private void populateMgs(Map<Integer, String> row, Draw d) {
